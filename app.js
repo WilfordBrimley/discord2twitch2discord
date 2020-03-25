@@ -10,8 +10,7 @@ disBot.once('ready', () => {
 disBot.login(config.token);
 
 //Twitch client
-const tmi = require('tmi.js');
-const client = new tmi.Client({
+const client = new(require('tmi.js')).Client({
 	options: {
 		debug: true
 	},
