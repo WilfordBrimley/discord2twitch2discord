@@ -44,9 +44,9 @@ client.on('message', (channel, tags, message, self) => {
 {
     "oauth": "YOUROAUTH",
     "username": "xOverBot",
-    "channels": "budsnbytes",
+    "channels": "",
     "token" : "YOURTOKEN",
-    "guildMirror": "514620771801497625",
+    "guildMirror": "",
     "disChannel": "stream-chat"
 
 }
