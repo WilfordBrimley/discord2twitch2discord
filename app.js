@@ -39,14 +39,3 @@ client.on('message', (channel, tags, message, self) => {
 	if (self) return;
 	logChannel.send(`${tags.username}: ${message}`)
 });
-/* This is the config.json setup:
-{
-    "oauth": "YOUROAUTH",
-    "username": "xOverBot",
-    "channels": "",
-    "token" : "YOURTOKEN",
-    "guildMirror": "",
-    "disChannel": "stream-chat"
-
-}
-*/
