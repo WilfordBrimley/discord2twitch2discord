@@ -2,7 +2,6 @@
     "oauth": "YOUROAUTH",
     "username": "xOverBot",
     "channels": "",
-    "token" : "YOURTOKEN",
     "guildMirror": "",
     "disChannel": "stream-chat"
 }

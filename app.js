@@ -1,65 +1,67 @@
-//Discord to Twitch both ways by Lovecraft#4690. WTFPL
+// Discord to Twitch both ways by Lovecraft#4690. WTFPL
 
-//Load Core config
-let config = require(`./config.json`),
+// Load dotenv
+require('dotenv').config()
 
-	//Discord Client Logon
-	discordClient = new(require(`discord.js`)).Client(),
-	logChannel = [];
+// Load Core config
+const config = require('./config.json')
 
-discordClient.once('ready', () => {
-	console.log('Ready!');
-	logChannel = discordClient.guilds.get(config.guildMirror).channels.find(channel => channel.name === config.disChannel);
-});
-discordClient.login(config.token);
+// Discord Client Logon
+const discordClient = new (require('discord.js')).Client()
+let logChannel = []
+
+discordClient.on('ready', (client) => {
+  console.log('Ready!')
+  logChannel = discordClient.guilds.get(config.guildMirror).channels.find(channel => channel.name === config.disChannel)
+})
+discordClient.login(process.env.TOKEN)
 
 // Handle discord to twitch
-discordClient.on(`message`, (message) => {
-	if (message.author.bot == true) return;
-	if (message.channel == logChannel) {
-		twitchClient.say(config.channels, `${message.author.username}: ${message.cleanContent}`)
-	}
+discordClient.on('message', (message) => {
+  if (message.author.bot === true) return
+  if (message.channel === logChannel) {
+    twitchClient.say(config.channels, `${message.author.username}: ${message.cleanContent}`)
+  }
 })
 
-//Twitch Client Logon
-const twitchClient = new(require('tmi.js')).Client({
-	options: {
-		debug: true
-	},
-	connection: {
-		reconnect: true,
-		secure: true
-	},
-	identity: {
-		username: config.username,
-		password: config.oauth
-	},
-	channels: [config.channels]
-});
-twitchClient.connect();
+// Twitch Client Logon
+const twitchClient = new (require('tmi.js')).Client({
+  options: {
+    debug: true
+  },
+  connection: {
+    reconnect: true,
+    secure: true
+  },
+  identity: {
+    username: config.username,
+    password: config.oauth
+  },
+  channels: [config.channels]
+})
+twitchClient.connect()
 
-
-//Handle twitch to discord
+// Handle twitch to discord
 twitchClient.on('message', (channel, tags, message, self) => {
-	if (message == `!test`) {
-		twitchClient.say(channel, `whatever`)
-	}
-	if (self) return;
-	logChannel.send(`**${tags.username}**: ${message}`)
-});
+  if (message === '!test') {
+    twitchClient.say(channel, 'whatever')
+  }
+  if (self) return
+  logChannel.send(`**${tags.username}**: ${message}`)
+})
 
-//Extras
-twitchClient.on("connected", (address, port) => {
-	console.log(`twitchClient connected success!
+// Extras
+twitchClient.on('connected', (address, port) => {
+  console.log(`twitchClient connected success!
 	ADDDRESS: ${address}
 	PORT: ${port}`)
-});
+})
 
 twitchClient.on('logon', () => {
-	console.log(`Connection established, TX/RX UP`)
-});
+  console.log('Connection established, TX/RX UP')
+})
 
-twitchClient.on("hosting", (channel, target, viewers) => {
-	twitchClient.say(`Now Hosting: ${channel} with ${viewers}
+twitchClient.on('hosting', (channel, target, viewers) => {
+  twitchClient.say(`Now Hosting: ${channel} with ${viewers}
 	You can check them out at: ${target}`)
-});
+})
