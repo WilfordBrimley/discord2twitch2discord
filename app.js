@@ -1,17 +1,28 @@
 //Discord to Twitch both ways by Lovecraft#4690. WTFPL
-//Load Core config
-config = require(`./config.json`);
-//Discord Client
-const disBot = new(require(`discord.js`)).Client();
-let logChannel = [];
-disBot.once('ready', () => {
-	console.log('Ready!');
-	logChannel = disBot.guilds.get(config.guildMirror).channels.find(channel => channel.name === config.disChannel);
-});
-disBot.login(config.token);
 
-//Twitch client
-const client = new(require('tmi.js')).Client({
+//Load Core config
+let config = require(`./config.json`),
+
+	//Discord Client Logon
+	discordClient = new(require(`discord.js`)).Client(),
+	logChannel = [];
+
+discordClient.once('ready', () => {
+	console.log('Ready!');
+	logChannel = discordClient.guilds.get(config.guildMirror).channels.find(channel => channel.name === config.disChannel);
+});
+discordClient.login(config.token);
+
+// Handle discord to twitch
+discordClient.on(`message`, (message) => {
+	if (message.author.bot == true) return;
+	if (message.channel == logChannel) {
+		twitchClient.say(config.channels, `${message.author.username}: ${message.cleanContent}`)
+	}
+})
+
+//Twitch Client Logon
+const twitchClient = new(require('tmi.js')).Client({
 	options: {
 		debug: true
 	},
@@ -25,41 +36,30 @@ const client = new(require('tmi.js')).Client({
 	},
 	channels: [config.channels]
 });
-client.connect();
+twitchClient.connect();
 
-// Handle discord to twitch
-disBot.on(`message`, (message) => {
-	if (message.author.bot == true) return;
-	if (message.channel == logChannel) {
-		client.say(config.channels, `${message.author.username}: ${message.cleanContent}`)
-	}
-})
 
 //Handle twitch to discord
-client.on('message', (channel, tags, message, self) => {
-	if(message == `!test`) {
-		client.say(channel, `whatever`)
+twitchClient.on('message', (channel, tags, message, self) => {
+	if (message == `!test`) {
+		twitchClient.say(channel, `whatever`)
 	}
 	if (self) return;
-	logChannel.send(`${tags.username}: ${message}`)
+	logChannel.send(`**${tags.username}**: ${message}`)
 });
 
-client.on('join', (channel, username, self) => {
-	if (self) return;
-	client.say(`Check out our website: www.aphidsgarden.com`)
-});
-
-client.on("connected", (address, port) => {
-   console.log(`Client connected success!
+//Extras
+twitchClient.on("connected", (address, port) => {
+	console.log(`twitchClient connected success!
 	ADDDRESS: ${address}
 	PORT: ${port}`)
 });
 
-client.on('logon', () => {
+twitchClient.on('logon', () => {
 	console.log(`Connection established, TX/RX UP`)
 });
 
-client.on("hosting", (channel, target, viewers) => {
-	client.say(`Now Hosting: ${channel} with ${viewers}
+twitchClient.on("hosting", (channel, target, viewers) => {
+	twitchClient.say(`Now Hosting: ${channel} with ${viewers}
 	You can check them out at: ${target}`)
 });
