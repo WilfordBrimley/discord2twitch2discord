@@ -1,4 +1,4 @@
-// Discord to Twitch both ways by Lovecraft#4690. WTFPL
+// Discord to Twitch both ways by Aphid#4690. WTFPL
 
 // Load dotenv
 require('dotenv').config()
