@@ -14,7 +14,7 @@ discordClient.on('ready', (client) => {
   console.log('Ready!')
   logChannel = discordClient.guilds.get(config.guildMirror).channels.find(channel => channel.name === config.disChannel)
 })
-discordClient.login(process.env.TOKEN)
+discordClient.login(config.token)
 
 // Handle discord to twitch
 discordClient.on('message', (message) => {
