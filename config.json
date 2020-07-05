@@ -1,7 +1,8 @@
 {
     "oauth": "YOUROAUTH",
     "username": "xOverBot",
-    "channels": "",
-    "guildMirror": "",
-    "disChannel": "stream-chat"
+    "channels": "TWITCHCHANNEL",
+    "token": "YOUR DISCORD BOT TOKEN",
+    "guildMirror": "YOUR GUILD ID",
+    "disChannel": "DISCORD CHANNEL NAME"
 }
